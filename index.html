@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>rxaudit · Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --paper: #f6f4ef;
+    --card: #fffdf9;
+    --ink: #1c1a17;
+    --body: #3a3631;
+    --muted: #6d665d;
+    --rule: #dcd6cb;
+    --rule-soft: #ebe6dc;
+    --accent: #7c2f25;
+    --high: #9b2318;
+    --high-bg: #f6e3df;
+    --med: #8a5a00;
+    --med-bg: #f5ead2;
+    --info: #55606b;
+    --info-bg: #e6e9ec;
+    --ok: #2f6b3a;
+    --ok-bg: #e2eee3;
+    --shadow: 0 1px 2px rgba(30,25,20,.06), 0 10px 26px -20px rgba(30,25,20,.45);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #161412;
+      --card: #1e1b18;
+      --ink: #f1ede6;
+      --body: #cdc6bb;
+      --muted: #978f84;
+      --rule: #34302b;
+      --rule-soft: #282521;
+      --accent: #e08a7c;
+      --high: #f0978a;
+      --high-bg: #3a201c;
+      --med: #e2b25c;
+      --med-bg: #33291a;
+      --info: #a9b3bd;
+      --info-bg: #262a2e;
+      --ok: #8cc896;
+      --ok-bg: #1d2c20;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 28px -20px rgba(0,0,0,.9);
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--body);
+    font-family: "Public Sans", -apple-system, "Segoe UI", sans-serif;
+    font-size: 16px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 48rem; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+
+  header { padding-bottom: 1.6rem; border-bottom: 1px solid var(--rule); }
+  .eyebrow {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: .74rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); margin: 0 0 .8rem;
+  }
+  h1 {
+    font-family: "Newsreader", Georgia, serif;
+    font-weight: 600; font-size: clamp(2.5rem, 7vw, 3.5rem);
+    line-height: 1.02; letter-spacing: -.02em; color: var(--ink); margin: 0;
+  }
+  .lede { font-size: 1.12rem; color: var(--body); margin: 1rem 0 0; max-width: 37rem; text-wrap: pretty; }
+  .facts {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+    gap: .2rem 1.2rem; margin: 1.6rem 0 0; padding: 0;
+  }
+  .facts div { border-left: 2px solid var(--rule); padding-left: .7rem; }
+  .facts dt { font-size: .72rem; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); }
+  .facts dd { margin: 0; color: var(--ink); font-weight: 500; }
+
+  section { margin-top: 3.2rem; }
+  h2 {
+    font-family: "Newsreader", Georgia, serif;
+    font-weight: 600; font-size: 1.7rem; letter-spacing: -.01em;
+    color: var(--ink); margin: 0 0 .35rem; text-wrap: balance;
+  }
+  h3 { font-size: 1rem; font-weight: 600; color: var(--ink); margin: 0 0 .25rem; }
+  .sub { color: var(--muted); margin: 0 0 1.4rem; max-width: 37rem; }
+  p { margin: 0 0 1rem; max-width: 37rem; text-wrap: pretty; }
+  a { color: var(--accent); }
+
+  .pilot {
+    margin-top: 2rem; background: var(--card);
+    border: 1px solid var(--rule); border-top: 3px solid var(--accent);
+    border-radius: 4px; padding: 1.3rem 1.5rem; box-shadow: var(--shadow);
+  }
+  .pilot h2 { font-size: 1.4rem; }
+  .pilot p { margin-bottom: .6rem; }
+  .pilot .contact { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: .9rem; margin: .8rem 0 0; }
+  .pilot .contact a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--rule); }
+
+  .group { margin-top: 1.8rem; }
+  .group-head { display: flex; align-items: baseline; gap: .8rem; flex-wrap: wrap; margin-bottom: .6rem; }
+  .group-head h3 { font-family: "Newsreader", Georgia, serif; font-size: 1.2rem; margin: 0; }
+  .group-head span { color: var(--muted); font-size: .92rem; }
+  .checks { list-style: none; margin: 0; padding: 0; border: 1px solid var(--rule); border-radius: 4px; background: var(--card); }
+  .checks li {
+    display: grid; grid-template-columns: 2.6rem 1fr auto; gap: 0 .9rem;
+    padding: .9rem 1.1rem; border-top: 1px solid var(--rule-soft);
+  }
+  .checks li:first-child { border-top: 0; }
+  .num { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: .85rem; color: var(--muted); padding-top: .1rem; }
+  .checks p { margin: 0; font-size: .94rem; }
+  .cite { font-size: .8rem; color: var(--muted); margin-top: .3rem !important; }
+  .sev {
+    font-family: "JetBrains Mono", ui-monospace, monospace; font-size: .68rem;
+    text-transform: uppercase; letter-spacing: .06em; font-weight: 500;
+    padding: .12rem .45rem; border-radius: 2px; height: max-content; white-space: nowrap;
+  }
+  .sev.high { color: var(--high); background: var(--high-bg); }
+  .sev.medium { color: var(--med); background: var(--med-bg); }
+  .sev.info { color: var(--info); background: var(--info-bg); }
+
+  ol.steps { list-style: none; margin: 0; padding: 0; counter-reset: s; }
+  ol.steps > li {
+    counter-increment: s; display: grid; grid-template-columns: 2.2rem 1fr; gap: 0 1rem;
+    padding: .95rem 0; border-top: 1px solid var(--rule-soft);
+  }
+  ol.steps > li:first-child { border-top: 1px solid var(--rule); }
+  ol.steps > li::before {
+    content: counter(s); font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: .85rem; font-weight: 500; color: var(--accent);
+    border: 1px solid var(--rule); border-radius: 50%;
+    width: 1.9rem; height: 1.9rem; display: grid; place-items: center;
+  }
+  ol.steps p { margin: 0; }
+  kbd {
+    font-family: "JetBrains Mono", ui-monospace, monospace; font-size: .85em;
+    background: var(--card); border: 1px solid var(--rule); border-bottom-width: 2px;
+    border-radius: 3px; padding: 0 .3rem; color: var(--ink);
+  }
+
+  .sample { margin-top: 1.2rem; border: 1px solid var(--rule); border-radius: 4px; background: var(--card); box-shadow: var(--shadow); overflow: hidden; }
+  .sample-bar { padding: .7rem 1rem; border-bottom: 1px solid var(--rule-soft); font-size: .85rem; color: var(--muted); }
+  .sample-bar b { color: var(--ink); font-weight: 600; }
+  .sample-scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: .86rem; }
+  th, td { text-align: left; padding: .5rem 1rem; border-top: 1px solid var(--rule-soft); vertical-align: top; }
+  th { font-weight: 500; color: var(--muted); font-size: .75rem; text-transform: uppercase; letter-spacing: .05em; border-top: 0; }
+  td.n { font-family: "JetBrains Mono", ui-monospace, monospace; text-align: right; color: var(--ink); }
+  .sample-note { padding: .6rem 1rem; font-size: .8rem; color: var(--muted); border-top: 1px solid var(--rule-soft); }
+
+  ul.points { list-style: none; margin: 0; padding: 0; }
+  ul.points li { padding: .75rem 0 .75rem 1.2rem; border-top: 1px solid var(--rule-soft); position: relative; max-width: 40rem; }
+  ul.points li::before { content: ""; position: absolute; left: 0; top: 1.35rem; width: .45rem; height: 2px; background: var(--accent); }
+  ul.points b { color: var(--ink); font-weight: 600; }
+
+  .privacy { margin-top: 1.4rem; padding: 1rem 1.2rem; background: var(--ok-bg); color: var(--ink); border-radius: 4px; max-width: 40rem; }
+  .privacy p { margin: 0; }
+
+  footer { margin-top: 4rem; padding-top: 1.2rem; border-top: 1px solid var(--rule); font-size: .85rem; color: var(--muted); }
+
+  @media (max-width: 34rem) {
+    .checks li { grid-template-columns: 2.1rem 1fr; }
+    .checks li .sev { grid-column: 2; justify-self: start; margin-top: .45rem; }
+  }
+  @media print {
+    body { background: #fff; }
+    .pilot, .sample { box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">Guide · for WinRx pharmacies</p>
+  <h1>rxaudit</h1>
+  <p class="lede">A compliance report for your pharmacy. It reads your WinRx records and lists the prescriptions an auditor or inspector would question, each with the rule they would cite, so you can fix them before an audit instead of during one.</p>
+  <dl class="facts">
+    <div><dt>Works with</dt><dd>WinRx</dd></div>
+    <div><dt>Access</dt><dd>Read-only</dd></div>
+    <div><dt>Runs on</dt><dd>Your store's computer</dd></div>
+    <div><dt>Checks</dt><dd>9</dd></div>
+  </dl>
+</header>
+
+<div class="pilot">
+  <h2>Try it on your store's data</h2>
+  <p>Run it, look at what it finds, and tell me which findings are real and which are wrong. That feedback is what the next version is built from.</p>
+  <p>The program comes to you by email as <span class="mono">rxaudit.zip</span>. Nothing to install, and it never changes your data.</p>
+  <p class="contact">Questions: <a href="mailto:hello@rexlin.io">hello@rexlin.io</a></p>
+</div>
+
+<section>
+  <h2>What it checks</h2>
+  <p class="sub">The checks look at your prescriptions, fills, reversals and sign-offs, and cite College of Pharmacists of BC bylaws (PODSA), the PharmaNet conformance standards and BC PharmaCare policy.</p>
+
+  <div class="group">
+    <div class="group-head"><h3>Claims to PharmaNet</h3><span>Fills that were claimed and should have been reversed</span></div>
+    <ul class="checks">
+      <li><span class="num">05</span><div><h3>Filled, never picked up, never reversed</h3><p>Fills over 30 days old with no signature or delivery record that are still claimed to PharmaNet.</p><p class="cite">PharmaNet Conformance Standards PNet22.2 · PODSA Bylaws s.35(4)</p></div><span class="sev high">high</span></li>
+      <li><span class="num">04</span><div><h3>Late reversal, or reversal with no reason</h3><p>Unclaimed fills reversed more than 30 days late, or reversed with no reason recorded.</p><p class="cite">PharmaNet Conformance Standards PNet22.2 · PODSA Bylaws s.35(4)</p></div><span class="sev high">high</span></li>
+    </ul>
+  </div>
+
+  <div class="group">
+    <div class="group-head"><h3>Dispensing within the prescription</h3><span>More than was authorized, or after it expired</span></div>
+    <ul class="checks">
+      <li><span class="num">01</span><div><h3>Dispensed more than authorized</h3><p>The amount handed out exceeds what the prescriber authorized, by quantity or by number of fills.</p><p class="cite">PODSA Bylaws s.19(7)</p></div><span class="sev high">high</span></li>
+      <li><span class="num">03</span><div><h3>Filled after the prescription expired</h3><p>Fills dispensed after the prescription's legal validity period had run out.</p><p class="cite">PODSA Bylaws s.23.1(3)</p></div><span class="sev high">high</span></li>
+    </ul>
+  </div>
+
+  <div class="group">
+    <div class="group-head"><h3>Records and sign-off</h3><span>What has to be on file</span></div>
+    <ul class="checks">
+      <li><span class="num">08</span><div><h3>Controlled prescription with no scanned form</h3><p>Fills of duplicate-form drugs with no scanned prescription image on file.</p><p class="cite">PODSA Bylaws s.19(6), s.23(4)</p></div><span class="sev high">high</span></li>
+      <li><span class="num">06</span><div><h3>Missing stop date</h3><p>Opioid agonist treatment and daily-dispensed prescriptions left with no stop date.</p><p class="cite">Community Pharmacy Practice Standards</p></div><span class="sev medium">medium</span></li>
+      <li><span class="num">09</span><div><h3>Workflow sign-off left blank</h3><p>Fills where a required sign-off in the workflow was never completed.</p><p class="cite">Community Pharmacy Practice Standards</p></div><span class="sev medium">medium</span></li>
+      <li><span class="num">10</span><div><h3>Fills whose prescription record is gone</h3><p>Dispenses whose prescription record was deleted while still inside the retention period.</p><p class="cite">PODSA Bylaws s.23(1), s.23(2)</p></div><span class="sev medium">medium</span></li>
+    </ul>
+  </div>
+
+  <div class="group">
+    <div class="group-head"><h3>For review</h3><span>A list to look over, not a list of problems</span></div>
+    <ul class="checks">
+      <li><span class="num">12</span><div><h3>Frequency of dispensing authorization status</h3><p>For each blister-pack and daily-dispense patient, whether the authorization was sent. This check is new and has only run at one store, so confirm a row against how your staff actually send the form before acting on it.</p><p class="cite">BC PharmaCare Frequency of Dispensing policy · PODSA Bylaws s.23(1)</p></div><span class="sev info">info</span></li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2>Running it</h2>
+  <p class="sub">On the computer at your store that runs WinRx. It takes a few seconds.</p>
+  <ol class="steps">
+    <li><div><h3>Unzip the package</h3><p>Unzip <span class="mono">rxaudit.zip</span> anywhere on the WinRx computer, for example the desktop.</p></div></li>
+    <li><div><h3>Open rxaudit.exe</h3><p>The first time, Windows may show a blue "Windows protected your PC" box, because it isn't signed yet. Click <kbd>More info</kbd>, then <kbd>Run anyway</kbd>.</p></div></li>
+    <li><div><h3>Check the connection</h3><p>It finds your WinRx database and fills in the connection boxes itself. You normally don't touch them.</p></div></li>
+    <li><div><h3>Pick a date range</h3><p>It starts at the last 90 days. Widen it to cover the period you care about, for example the months an auditor has asked about.</p></div></li>
+    <li><div><h3>Click Run audit</h3><p>The report opens in your web browser and a copy is saved in a <span class="mono">reports</span> folder next to the program.</p></div></li>
+  </ol>
+</section>
+
+<section>
+  <h2>Reading the report</h2>
+  <p class="sub">The top of the report is a summary of every check. Below it, each check has its own table of findings.</p>
+
+  <div class="sample">
+    <div class="sample-bar"><b>rxaudit report</b> · sample on made-up data · 2026-01-01 to 2026-06-30</div>
+    <div class="sample-scroll">
+    <table>
+      <thead><tr><th>#</th><th>Check</th><th>Severity</th><th style="text-align:right">Findings</th></tr></thead>
+      <tbody>
+        <tr><td class="num">01</td><td>Dispensed more than the prescription authorized</td><td><span class="sev high">high</span></td><td class="n">3</td></tr>
+        <tr><td class="num">04</td><td>Reversal later than 30 days, or reversal without a reason</td><td><span class="sev high">high</span></td><td class="n">2</td></tr>
+        <tr><td class="num">05</td><td>Filled, no proof of pickup, never reversed</td><td><span class="sev high">high</span></td><td class="n">2</td></tr>
+        <tr><td class="num">06</td><td>Missing stop date on an OAT or daily-dispensed prescription</td><td><span class="sev medium">medium</span></td><td class="n">3</td></tr>
+        <tr><td class="num">10</td><td>Fills whose prescription record is gone</td><td><span class="sev medium">medium</span></td><td class="n">0</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="sample-note">Shortened. The real summary lists all nine checks with the rule each one cites.</div>
+  </div>
+
+  <ul class="points" style="margin-top:1.4rem">
+    <li><b>Start with high.</b> Look at high-severity findings first. Medium findings are work lists: records to complete, not emergencies.</li>
+    <li><b>Every finding names the prescription.</b> Rx number, drug, dates and quantities, so you can open it in WinRx and see for yourself.</li>
+    <li><b>Zero can mean "doesn't apply".</b> Checks 05 and 08 depend on your store recording pickups and scanning prescriptions electronically. If it mostly does that on paper, these checks stay quiet rather than flagging every fill, so a zero there is not proof that everything is clean.</li>
+    <li><b>The version is printed at the bottom.</b> It's also in the window title. Quote it when you report a problem.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Your data stays at your store</h2>
+  <ul class="points">
+    <li><b>Read-only.</b> It only reads your WinRx database. It never changes, deletes or writes anything.</li>
+    <li><b>Nothing is sent anywhere.</b> It runs entirely on your computer and sends nothing.</li>
+    <li><b>The report contains patient information.</b> Keep it on that computer and please don't email it, including to me.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>If something goes wrong</h2>
+  <ul class="points">
+    <li><b>It can't connect.</b> The connection boxes at the top of the window can be edited. If they're empty or the login fails, email me. It's usually the server name or the password for that store, and it takes a minute to fix over AnyDesk.</li>
+    <li><b>A finding looks wrong.</b> Note the check number and tell me what's wrong with it, and we'll look at it together on your screen.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>What I'd like to hear back</h2>
+  <ol class="steps">
+    <li><p>Which findings were real, and which were false alarms? The check number is enough.</p></li>
+    <li><p>If you've been audited recently, did rxaudit flag the same prescriptions the auditor asked about? What did they ask for that it missed?</p></li>
+    <li><p>Would you have run this before that audit, and how often would you run it now?</p></li>
+  </ol>
+</section>
+
+<footer>
+  rxaudit · Questions: <a href="mailto:hello@rexlin.io">hello@rexlin.io</a>
+</footer>
+
+</div>
+</body>
+</html>
